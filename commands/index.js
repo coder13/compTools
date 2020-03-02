@@ -1,3 +1,1 @@
-module.exports = {
-  psych: require('./psychSheet')
-};
+module.exports.psych = require('./psychSheet');
