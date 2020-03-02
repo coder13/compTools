@@ -7,9 +7,9 @@ require('yargs')
   .option('auth', {
     alias: 'a',
     type: 'string',
-    description: 'Authorizatin Token',
+    description: 'Authorization Token',
   })
-  .command('psych [comp] [event]', 'Get the psych sheet for the given event', (yargs) => {
+  .command('psych <comp> <event>', 'Get the psych sheet for the given event', (yargs) => {
     yargs
       .positional('sort', {
         describe: 'Sort by: single | average',
@@ -18,4 +18,9 @@ require('yargs')
   }, (argv) => {
     commands.psych(argv);
   })
+  .command('prizes <comp>', 'Get prize money for competitions based on thecubicle\'s scheme', {}, (argv) => {
+    commands.prizes(argv);
+  })
+  .demandCommand()
+  .help()
   .argv;

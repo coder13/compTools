@@ -17,7 +17,7 @@ const podiums = {};
 
 wcif.events.forEach((event) => {
   event.rounds.forEach((round) => {
-    round.results.slice(0,3).forEach((podium, place) => {
+    round.results.slice(0, 3).forEach((podium, place) => {
       if (!podiums[podium.personId]) {
         podiums[podium.personId] = 0;
       }
