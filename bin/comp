@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const utils = require('../lib/utils');
+const commands = require('../commands');
+
+require('yargs')
+  .option('auth', {
+    alias: 'a',
+    type: 'string',
+    description: 'Authorizatin Token'
+  })
+  .command('psych [comp] [event]', 'Get the psych sheet for the given event', (yargs) => {
+    yargs
+      .positional('sort', {
+        describe: 'Sort by: single | average',
+        default: 'single'
+      })
+  }, (argv) => {
+    commands.psych(argv);
+  })
+  .argv;
