@@ -1,6 +1,22 @@
 #!/usr/bin/env node
+/* eslint-disable no-param-reassign */
+const fs = require('fs').promises;
+const api = require('../lib/api');
 
-const commands = require('../commands');
+const bufferStdin = () => new Promise((res) => {
+  let data = '';
+  process.stdin.on('data', (lines) => {
+    data += lines;
+  });
+  process.stdin.on('end', () => {
+    res(data);
+  });
+});
+
+const handleError = (err) => {
+  process.exit(1);
+  // throw new Error(err);
+};
 
 // eslint-disable-next-line no-unused-expressions
 require('yargs')
@@ -9,18 +25,42 @@ require('yargs')
     type: 'string',
     description: 'Authorization Token',
   })
-  .command('psych <comp> <event>', 'Get the psych sheet for the given event', (yargs) => {
-    yargs
-      .positional('sort', {
-        describe: 'Sort by: single | average',
-        default: 'single',
-      });
-  }, (argv) => {
-    commands.psych(argv);
+  .option('comp', {
+    alias: 'c',
+    type: 'string',
+    description: 'Competition ID',
   })
-  .command('prizes <comp>', 'Get prize money for competitions based on thecubicle\'s scheme', {}, (argv) => {
-    commands.prizes(argv);
+  .option('wcif', {
+    alias: 'w',
+    type: 'string',
+    description: 'File location of the wcif.json',
   })
+  .check((argv) => {
+    if (argv._[0] === 'fetch') {
+      return true;
+    }
+
+    if (argv.comp) {
+      const fetch = argv.auth ? api.fetchWcif(argv.comp, argv.auth)
+        : api.fetchPublicWcif(argv.comp);
+
+      argv.json = fetch
+        .then((res) => res.json())
+        .then((comp) => {
+          if (comp.error) {
+            throw new Error(comp.error);
+          }
+          return comp;
+        })
+        .catch(handleError);
+    } else if (argv.wcif) {
+      argv.json = fs.readFile(argv.wcif).then(JSON.parse).catch(handleError);
+    } else {
+      argv.json = bufferStdin().then(JSON.parse).catch(handleError);
+    }
+    return true;
+  }, true)
+  .commandDir('../commands')
   .demandCommand()
   .help()
   .argv;
