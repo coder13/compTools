@@ -21,5 +21,8 @@ exports.handler = (argv) => {
         : process.stdout;
 
       res.body.pipe(dest);
+    })
+    .catch((err) => {
+      console.error(err);
     });
 };

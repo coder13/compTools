@@ -14,8 +14,7 @@ const bufferStdin = () => new Promise((res) => {
 });
 
 const handleError = (err) => {
-  process.exit(1);
-  // throw new Error(err);
+  console.error(err);
 };
 
 // eslint-disable-next-line no-unused-expressions
@@ -40,7 +39,9 @@ require('yargs')
       return true;
     }
 
-    if (argv.comp) {
+    if (argv.wcif) {
+      argv.json = fs.readFile(argv.wcif).then(JSON.parse).catch(handleError);
+    } else if (argv.comp) {
       const fetch = argv.auth ? api.fetchWcif(argv.comp, argv.auth)
         : api.fetchPublicWcif(argv.comp);
 
@@ -53,8 +54,6 @@ require('yargs')
           return comp;
         })
         .catch(handleError);
-    } else if (argv.wcif) {
-      argv.json = fs.readFile(argv.wcif).then(JSON.parse).catch(handleError);
     } else {
       argv.json = bufferStdin().then(JSON.parse).catch(handleError);
     }
