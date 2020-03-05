@@ -2,13 +2,7 @@ const chalk = require('chalk');
 const utils = require('../../lib/utils');
 
 exports.command = 'overview';
-exports.desc = 'Provides and overview of groups';
-
-exports.builder = {
-  activityCode: {
-    type: 'string',
-  },
-};
+exports.desc = 'Provides an overview of groups';
 
 const flattenRooms = (wcif) => utils.flatMap(wcif.schedule.venues, (venue) => venue.rooms);
 
