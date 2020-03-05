@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const utils = require('../../lib/utils');
 
-exports.command = 'groups <activityCode>';
+exports.command = 'print <activityCode>';
 exports.desc = 'Prints groups';
 
 exports.builder = {
